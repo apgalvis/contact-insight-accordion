@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { AlertTriangle, User } from "lucide-react";
+import { AlertTriangle, Loader2, User } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import type { ContactInfo } from "../types";
 import { OtpBadge } from "./badges";
+import { saveContact } from "../api";
 
 type OtpField = {
   key: keyof ContactInfo;
@@ -67,6 +69,7 @@ export function EditProfileDialog({
 }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(contact);
+  const [saving, setSaving] = useState(false);
 
   function renderOtpField(f: OtpField) {
     const currentValue = String(draft[f.key] ?? "");
@@ -98,19 +101,30 @@ export function EditProfileDialog({
     );
   }
 
-  function handleSave() {
+  async function handleSave() {
     const next: ContactInfo = { ...draft };
     for (const f of OTP_FIELDS) {
       if (draft[f.key] !== contact[f.key]) (next[f.otpKey] as boolean) = false;
     }
-    onSave(next);
-    setOpen(false);
+    setSaving(true);
+    try {
+      const saved = await saveContact(next);
+      onSave(saved);
+      toast.success("Perfil actualizado correctamente.");
+      setOpen(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "No se pudo guardar el perfil.";
+      toast.error(message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <Dialog
       open={open}
       onOpenChange={(o) => {
+        if (saving) return;
         setOpen(o);
         if (o) setDraft(contact);
       }}
@@ -154,10 +168,13 @@ export function EditProfileDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={saving}>
             Cancelar
           </Button>
-          <Button onClick={handleSave}>Guardar</Button>
+          <Button onClick={handleSave} disabled={saving} className="gap-1.5">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {saving ? "Guardando..." : "Guardar"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

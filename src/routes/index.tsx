@@ -1,19 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CheckCircle2, Search, User } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { AlertCircle, CheckCircle2, Loader2, Search } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DEFAULT_CONTACT,
-  PCOM_ROWS,
-  type ContactInfo,
-} from "@/features/announcer/types";
+import { AnnouncerAccordion } from "@/features/announcer/AnnouncerAccordion";
+import { searchClient } from "@/features/announcer/api";
+import { PCOM_ROWS, type ContactInfo } from "@/features/announcer/types";
 import { ContactoBasicoSection } from "@/features/announcer/sections/ContactoBasicoSection";
 import { PcomSection } from "@/features/announcer/sections/PcomSection";
 import { ProductosExpirarSection } from "@/features/announcer/sections/ProductosExpirarSection";
@@ -30,12 +23,31 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [query, setQuery] = useState("angiegalvis@habi.co");
-  const [searched, setSearched] = useState<string | null>("angiegalvis@habi.co");
-  const [contact, setContact] = useState<ContactInfo>(DEFAULT_CONTACT);
+  const [contact, setContact] = useState<ContactInfo | null>(null);
+  const [searchedEmail, setSearchedEmail] = useState<string | null>(null);
   const [feedOn, setFeedOn] = useState(true);
-  const [openSection, setOpenSection] = useState<string>("contacto");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const hasResults = !!searched;
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await searchClient(query);
+      setContact(result);
+      setSearchedEmail(query.trim());
+      toast.success("Cliente encontrado.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Error al buscar el cliente.";
+      setContact(null);
+      setSearchedEmail(null);
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-muted/30 px-4 py-8">
@@ -45,63 +57,64 @@ function Index() {
             <Search className="h-4 w-4" />
             Buscar cliente
           </div>
-          <form
-            className="flex gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearched(query.trim() || null);
-            }}
-          >
+          <form className="flex gap-2" onSubmit={handleSearch}>
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="correo@cliente.com"
               className="h-11"
+              disabled={loading}
             />
-            <Button type="submit" className="h-11 px-6">
-              Buscar
+            <Button type="submit" className="h-11 gap-1.5 px-6" disabled={loading}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {loading ? "Buscando..." : "Buscar"}
             </Button>
           </form>
         </div>
 
-        {!hasResults ? (
+        {loading ? (
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-card p-10 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Buscando información del anunciante...
+          </div>
+        ) : error ? (
+          <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <div>
+              <p className="font-medium">No se pudo cargar la información.</p>
+              <p className="text-destructive/80">{error}</p>
+            </div>
+          </div>
+        ) : !contact ? (
           <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
             Busca un correo para ver la información del anunciante.
           </div>
         ) : (
-          <Accordion type="single" collapsible defaultValue="anunciante">
-            <AccordionItem
-              value="anunciante"
-              className="rounded-lg border border-border bg-card px-4 shadow-sm"
-            >
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-primary" />
-                  <span className="text-base font-semibold">
-                    Información del anunciante · {searched}
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <Accordion
-                  type="single"
-                  collapsible
-                  value={openSection}
-                  onValueChange={setOpenSection}
-                  className="flex flex-col gap-3 pt-2"
-                >
+          <AnnouncerAccordion
+            title={`Información del anunciante · ${searchedEmail}`}
+            sections={[
+              {
+                id: "contacto",
+                defaultOpen: true,
+                render: () => (
                   <ContactoBasicoSection
                     contact={contact}
                     onSave={setContact}
                     feedOn={feedOn}
                     onFeedChange={setFeedOn}
                   />
-                  <PcomSection />
-                  <ProductosExpirarSection rows={PCOM_ROWS} />
-                </Accordion>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                ),
+              },
+              {
+                id: "pcom",
+                render: () => <PcomSection />,
+              },
+              {
+                id: "productos",
+                render: () => <ProductosExpirarSection rows={PCOM_ROWS} />,
+              },
+            ]}
+          />
         )}
 
         <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
