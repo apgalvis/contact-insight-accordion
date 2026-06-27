@@ -111,12 +111,18 @@ const PCOM_ROWS: PcomRow[] = [
 
 function OtpBadge({ verified }: { verified: boolean }) {
   return verified ? (
-    <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-      <CheckCircle2 className="h-3.5 w-3.5" /> Verificado OTP
+    <span
+      title="Verificado OTP"
+      className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600"
+    >
+      <CheckCircle2 className="h-3 w-3" /> OTP
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
-      <XCircle className="h-3.5 w-3.5" /> Sin verificar
+    <span
+      title="Sin verificar OTP"
+      className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-destructive"
+    >
+      <XCircle className="h-3 w-3" /> OTP
     </span>
   );
 }
@@ -131,12 +137,12 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2.5 text-sm">
-      <div className="flex min-w-[140px] items-center gap-2 text-muted-foreground">
-        <Icon className="h-4 w-4" />
+    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2.5 text-sm">
+      <div className="flex w-[140px] shrink-0 items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" />
         <span>{label}</span>
       </div>
-      <div className="flex flex-1 items-center justify-end gap-2 text-right text-foreground">
+      <div className="flex min-w-0 flex-1 items-center justify-end gap-2 text-right text-foreground">
         {children}
       </div>
     </div>
@@ -169,10 +175,14 @@ function ProductFeatureToggle({
 }) {
   const [on, setOn] = useState(defaultOn);
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2.5 text-sm">
-      <div className="flex items-center gap-2 text-foreground">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        <span>{label}</span>
+    <div
+      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors ${
+        on ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
+      }`}
+    >
+      <div className="flex min-w-0 items-center gap-2 text-foreground">
+        <Icon className={`h-4 w-4 shrink-0 ${on ? "text-primary" : "text-muted-foreground"}`} />
+        <span className="truncate font-medium">{label}</span>
       </div>
       <Switch checked={on} onCheckedChange={setOn} />
     </div>
@@ -191,16 +201,18 @@ function StatCard({
   warning?: boolean;
 }) {
   return (
-    <div className="rounded-md border border-border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
+    <div
+      className={`rounded-md border px-4 py-3 ${
+        warning ? "border-amber-300/60 bg-amber-50/60" : "border-border bg-muted/30"
+      }`}
+    >
+      <p className="text-xs leading-tight text-muted-foreground">{label}</p>
       <div className="mt-2 flex items-baseline gap-2">
-        <span className={`text-2xl font-semibold ${warning ? "text-amber-600" : "text-primary"}`}>
+        <span className={`text-2xl font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
           {value}
         </span>
         {hint ? (
-          <Badge variant="secondary" className="text-xs text-muted-foreground">
-            {hint}
-          </Badge>
+          <span className="text-[11px] font-medium text-muted-foreground">{hint}</span>
         ) : null}
       </div>
     </div>
@@ -371,9 +383,10 @@ function Index() {
                     {contact.apellido}
                   </FieldRow>
                   <FieldRow icon={Rss} label="Feed">
+                    <span className="font-medium">
+                      {feedOn ? contact.nombreFeed : "No aplica"}
+                    </span>
                     <Switch checked={feedOn} onCheckedChange={setFeedOn} />
-                    <span className="ml-3 text-xs text-muted-foreground">Nombre Feed</span>
-                    <span className="font-medium">{feedOn ? contact.nombreFeed : "No aplica"}</span>
                   </FieldRow>
                   <FieldRow icon={Mail} label="Email contacto">
                     <span className="truncate">{contact.emailContacto}</span>
@@ -414,16 +427,16 @@ function Index() {
                   <StatCard label="Total de slots vacíos sin asignación" value={4} />
                   <StatCard label="Total propiedades destacadas" value={17} />
                   <StatCard label="Total propiedades fuera de mercado" value={1} />
-                  <StatCard label="Score promedio" value="78%" hint="> 80" warning />
+                  <StatCard label="Score promedio" value="78%" hint="Meta ≥ 80%" warning />
                   <StatCard label="Promedio de inventario activo" value={200} />
                 </div>
 
                 <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-border bg-card px-4 py-3">
+                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
                     <p className="text-xs text-muted-foreground">Zona principal de publicación</p>
                     <p className="mt-1 text-base font-semibold text-primary">Polanco</p>
                   </div>
-                  <div className="rounded-md border border-border bg-card px-4 py-3">
+                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
                     <p className="text-xs text-muted-foreground">Fecha de la última publicación</p>
                     <p className="mt-1 text-base font-semibold text-primary">23-06-2025</p>
                   </div>
