@@ -39,6 +39,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Table,
   TableBody,
   TableCell,
@@ -404,7 +410,20 @@ function Index() {
                     <span className="font-medium">
                       {feedOn ? contact.nombreFeed : "No aplica"}
                     </span>
-                    <Switch checked={feedOn} onCheckedChange={setFeedOn} />
+                    <TooltipProvider delayDuration={150}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span tabIndex={0} className="inline-flex">
+                            <Switch checked={feedOn} onCheckedChange={setFeedOn} />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          {feedOn
+                            ? "Feed activo: se está sincronizando inventario"
+                            : "Feed inactivo: no hay sincronización de inventario"}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </FieldRow>
                   <FieldRow icon={Mail} label="Email contacto">
                     <span className="truncate">{contact.emailContacto}</span>
