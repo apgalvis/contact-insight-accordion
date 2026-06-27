@@ -306,10 +306,10 @@ function EditProfileDialog({
     >
       <DialogTrigger asChild>
         <Button
-          variant="outline"
           size="sm"
-          className="border-primary text-primary hover:bg-primary/10 hover:text-primary"
+          className="gap-1.5 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
         >
+          <User className="h-4 w-4" />
           Editar perfil
         </Button>
       </DialogTrigger>
@@ -447,7 +447,11 @@ function Index() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span tabIndex={0} className="inline-flex">
-                            <Switch checked={feedOn} onCheckedChange={setFeedOn} />
+                            <Switch
+                              checked={feedOn}
+                              onCheckedChange={setFeedOn}
+                              className="data-[state=checked]:bg-emerald-500"
+                            />
                           </span>
                         </TooltipTrigger>
                         <TooltipContent side="top">
