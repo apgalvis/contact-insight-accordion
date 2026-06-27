@@ -8,7 +8,6 @@ import { AnnouncerAccordion } from "@/features/announcer/AnnouncerAccordion";
 import { searchClient } from "@/features/announcer/api";
 import { PCOM_ROWS, type ContactInfo } from "@/features/announcer/types";
 import { ContactoBasicoSection } from "@/features/announcer/sections/ContactoBasicoSection";
-import { EditProfileDialog } from "@/features/announcer/components/EditProfileDialog";
 import { PcomSection } from "@/features/announcer/sections/PcomSection";
 import { ProductosExpirarSection } from "@/features/announcer/sections/ProductosExpirarSection";
 
@@ -126,6 +125,3 @@ function Index() {
     </div>
   );
 }
-
-// Silence unused import warning: EditProfileDialog is re-exported via section, kept for tree-shake clarity.
-void EditProfileDialog;
