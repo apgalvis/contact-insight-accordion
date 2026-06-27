@@ -183,18 +183,24 @@ function ProductFeatureToggle({
   label: string;
   defaultOn?: boolean;
 }) {
-  const [on, setOn] = useState(defaultOn);
+  const on = defaultOn;
   return (
     <div
       className={`flex items-center justify-between gap-2 rounded-md border px-2.5 py-2 text-sm transition-colors ${
-        on ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
+        on ? "border-emerald-500/30 bg-emerald-500/5" : "border-border bg-muted/30"
       }`}
     >
       <div className="flex min-w-0 items-center gap-2 text-foreground">
-        <Icon className={`h-4 w-4 shrink-0 ${on ? "text-primary" : "text-muted-foreground"}`} />
+        <Icon className={`h-4 w-4 shrink-0 ${on ? "text-emerald-600" : "text-muted-foreground"}`} />
         <span className="truncate font-medium">{label}</span>
       </div>
-      <Switch checked={on} onCheckedChange={setOn} />
+      <Switch
+        checked={on}
+        disabled
+        aria-readonly
+        title="Información de solo lectura"
+        className="pointer-events-none data-[state=checked]:bg-emerald-500 disabled:cursor-default disabled:opacity-100"
+      />
     </div>
   );
 }
@@ -212,13 +218,15 @@ function StatCard({
 }) {
   return (
     <div
-      className={`rounded-md border px-3 py-2 ${
+      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm ${
         warning ? "border-amber-300/60 bg-amber-50/60" : "border-border bg-muted/30"
       }`}
     >
-      <p className="text-[11px] leading-tight text-muted-foreground line-clamp-2">{label}</p>
-      <div className="mt-1 flex items-baseline gap-1.5">
-        <span className={`text-xl font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
+      <p className="min-w-0 flex-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <div className="flex shrink-0 items-baseline gap-1.5">
+        <span className={`text-base font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
           {value}
         </span>
         {hint ? (
@@ -430,7 +438,7 @@ function Index() {
                   <ProductFeatureToggle icon={Gem} label="Elite" />
                 </div>
 
-                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+                <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                   <StatCard label="Total propiedades" value={30} />
                   <StatCard label="Total propiedades activas" value={25} />
                   <StatCard label="Activas residenciales" value={23} />
@@ -442,14 +450,8 @@ function Index() {
                 </div>
 
                 <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-border bg-muted/30 px-3 py-2">
-                    <p className="text-[11px] text-muted-foreground">Zona principal de publicación</p>
-                    <p className="mt-0.5 text-sm font-semibold text-primary">Polanco</p>
-                  </div>
-                  <div className="rounded-md border border-border bg-muted/30 px-3 py-2">
-                    <p className="text-[11px] text-muted-foreground">Fecha de la última publicación</p>
-                    <p className="mt-0.5 text-sm font-semibold text-primary">23-06-2025</p>
-                  </div>
+                  <StatCard label="Zona principal de publicación" value="Polanco" />
+                  <StatCard label="Fecha última publicación" value="23-06-2025" />
                 </div>
               </AccordionContent>
             </AccordionItem>
