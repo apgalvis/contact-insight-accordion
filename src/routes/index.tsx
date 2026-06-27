@@ -111,12 +111,18 @@ const PCOM_ROWS: PcomRow[] = [
 
 function OtpBadge({ verified }: { verified: boolean }) {
   return verified ? (
-    <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-      <CheckCircle2 className="h-3.5 w-3.5" /> Verificado OTP
+    <span
+      title="Verificado OTP"
+      className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600"
+    >
+      <CheckCircle2 className="h-3 w-3" /> OTP
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
-      <XCircle className="h-3.5 w-3.5" /> Sin verificar
+    <span
+      title="Sin verificar OTP"
+      className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-destructive"
+    >
+      <XCircle className="h-3 w-3" /> OTP
     </span>
   );
 }
