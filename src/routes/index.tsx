@@ -76,9 +76,9 @@ type ContactInfo = {
 
 type PcomRow = {
   mes: string;
-  destacados: "activo" | "no" | "none";
+  destacados: number | null;
   elite: "activo" | "no";
-  prime: "activo" | "no" | "none";
+  prime: number | null;
   oi: "activo" | "no";
   estado: "adquirido" | "proximo" | "no_aplica";
 };
@@ -101,12 +101,12 @@ const DEFAULT_CONTACT: ContactInfo = {
 };
 
 const PCOM_ROWS: PcomRow[] = [
-  { mes: "Mayo 2025", destacados: "none", elite: "no", prime: "none", oi: "no", estado: "no_aplica" },
-  { mes: "Junio 2025", destacados: "activo", elite: "activo", prime: "activo", oi: "activo", estado: "adquirido" },
-  { mes: "Julio 2025", destacados: "activo", elite: "no", prime: "activo", oi: "activo", estado: "proximo" },
-  { mes: "Agosto 2025", destacados: "none", elite: "no", prime: "none", oi: "activo", estado: "adquirido" },
-  { mes: "Septiembre 2025", destacados: "none", elite: "no", prime: "none", oi: "no", estado: "no_aplica" },
-  { mes: "Octubre 2025", destacados: "none", elite: "no", prime: "none", oi: "no", estado: "no_aplica" },
+  { mes: "Mayo 2025", destacados: null, elite: "no", prime: null, oi: "no", estado: "no_aplica" },
+  { mes: "Junio 2025", destacados: 5, elite: "activo", prime: 3, oi: "activo", estado: "adquirido" },
+  { mes: "Julio 2025", destacados: 8, elite: "no", prime: 2, oi: "activo", estado: "proximo" },
+  { mes: "Agosto 2025", destacados: 4, elite: "no", prime: null, oi: "activo", estado: "adquirido" },
+  { mes: "Septiembre 2025", destacados: 2, elite: "no", prime: 1, oi: "no", estado: "proximo" },
+  { mes: "Octubre 2025", destacados: null, elite: "no", prime: null, oi: "no", estado: "no_aplica" },
 ];
 
 function OtpBadge({ verified }: { verified: boolean }) {
@@ -137,8 +137,8 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2.5 text-sm">
-      <div className="flex w-[140px] shrink-0 items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+      <div className="flex w-[140px] shrink-0 items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
         <span>{label}</span>
       </div>
@@ -164,6 +164,16 @@ function ActivoCell({ value }: { value: "activo" | "no" | "none" }) {
   return <span className="text-sm text-muted-foreground">—</span>;
 }
 
+function QtyCell({ value }: { value: number | null }) {
+  if (value === null || value === 0)
+    return <span className="text-sm text-muted-foreground">—</span>;
+  return (
+    <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/10">
+      {value}
+    </Badge>
+  );
+}
+
 function ProductFeatureToggle({
   icon: Icon,
   label,
@@ -176,7 +186,7 @@ function ProductFeatureToggle({
   const [on, setOn] = useState(defaultOn);
   return (
     <div
-      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors ${
+      className={`flex items-center justify-between gap-2 rounded-md border px-2.5 py-2 text-sm transition-colors ${
         on ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
       }`}
     >
@@ -202,17 +212,17 @@ function StatCard({
 }) {
   return (
     <div
-      className={`rounded-md border px-4 py-3 ${
+      className={`rounded-md border px-3 py-2 ${
         warning ? "border-amber-300/60 bg-amber-50/60" : "border-border bg-muted/30"
       }`}
     >
-      <p className="text-xs leading-tight text-muted-foreground">{label}</p>
-      <div className="mt-2 flex items-baseline gap-2">
-        <span className={`text-2xl font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
+      <p className="text-[11px] leading-tight text-muted-foreground line-clamp-2">{label}</p>
+      <div className="mt-1 flex items-baseline gap-1.5">
+        <span className={`text-xl font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
           {value}
         </span>
         {hint ? (
-          <span className="text-[11px] font-medium text-muted-foreground">{hint}</span>
+          <span className="text-[10px] font-medium text-muted-foreground">{hint}</span>
         ) : null}
       </div>
     </div>
@@ -317,7 +327,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-muted/30 px-4 py-8">
-      <div className="mx-auto flex max-w-5xl flex-col gap-4">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3">
         {/* Search */}
         <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
@@ -351,7 +361,7 @@ function Index() {
           <Accordion
             type="multiple"
             defaultValue={["contacto", "pcom", "productos"]}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-3"
           >
             {/* 1. Contacto básico */}
             <AccordionItem value="contacto" className="rounded-lg border border-border bg-card px-4 shadow-sm">
@@ -412,7 +422,7 @@ function Index() {
                 <span className="text-base font-semibold">Información PCOM</span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
                   <ProductFeatureToggle icon={Zap} label="LI - Leads ilimitados" />
                   <ProductFeatureToggle icon={InfinityIcon} label="Oi - Oportunidades ilimitadas" />
                   <ProductFeatureToggle icon={Star} label="Destacados" />
@@ -420,25 +430,25 @@ function Index() {
                   <ProductFeatureToggle icon={Gem} label="Elite" />
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
                   <StatCard label="Total propiedades" value={30} />
                   <StatCard label="Total propiedades activas" value={25} />
-                  <StatCard label="Total propiedades activas de tipo residencial" value={23} />
-                  <StatCard label="Total de slots vacíos sin asignación" value={4} />
+                  <StatCard label="Activas residenciales" value={23} />
+                  <StatCard label="Slots vacíos sin asignación" value={4} />
                   <StatCard label="Total propiedades destacadas" value={17} />
-                  <StatCard label="Total propiedades fuera de mercado" value={1} />
+                  <StatCard label="Fuera de mercado" value={1} />
                   <StatCard label="Score promedio" value="78%" hint="Meta ≥ 80%" warning />
                   <StatCard label="Promedio de inventario activo" value={200} />
                 </div>
 
-                <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
-                    <p className="text-xs text-muted-foreground">Zona principal de publicación</p>
-                    <p className="mt-1 text-base font-semibold text-primary">Polanco</p>
+                <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <div className="rounded-md border border-border bg-muted/30 px-3 py-2">
+                    <p className="text-[11px] text-muted-foreground">Zona principal de publicación</p>
+                    <p className="mt-0.5 text-sm font-semibold text-primary">Polanco</p>
                   </div>
-                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
-                    <p className="text-xs text-muted-foreground">Fecha de la última publicación</p>
-                    <p className="mt-1 text-base font-semibold text-primary">23-06-2025</p>
+                  <div className="rounded-md border border-border bg-muted/30 px-3 py-2">
+                    <p className="text-[11px] text-muted-foreground">Fecha de la última publicación</p>
+                    <p className="mt-0.5 text-sm font-semibold text-primary">23-06-2025</p>
                   </div>
                 </div>
               </AccordionContent>
@@ -458,9 +468,9 @@ function Index() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Mes</TableHead>
-                          <TableHead>Destacados [5]</TableHead>
+                          <TableHead>Destacados</TableHead>
                           <TableHead>Elite</TableHead>
-                          <TableHead>Prime [3]</TableHead>
+                          <TableHead>Prime</TableHead>
                           <TableHead>Oi</TableHead>
                           <TableHead>Estado</TableHead>
                         </TableRow>
@@ -470,13 +480,13 @@ function Index() {
                           <TableRow key={r.mes}>
                             <TableCell className="font-medium">{r.mes}</TableCell>
                             <TableCell>
-                              <ActivoCell value={r.destacados} />
+                              <QtyCell value={r.destacados} />
                             </TableCell>
                             <TableCell>
                               <ActivoCell value={r.elite} />
                             </TableCell>
                             <TableCell>
-                              <ActivoCell value={r.prime} />
+                              <QtyCell value={r.prime} />
                             </TableCell>
                             <TableCell>
                               <ActivoCell value={r.oi} />
