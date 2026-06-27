@@ -405,11 +405,25 @@ function Index() {
             Busca un correo para ver la información del anunciante.
           </div>
         ) : (
-          <Accordion
-            type="multiple"
-            defaultValue={["contacto", "pcom", "productos"]}
-            className="flex flex-col gap-3"
-          >
+          <Accordion type="single" collapsible defaultValue="anunciante">
+            <AccordionItem
+              value="anunciante"
+              className="rounded-lg border border-border bg-card px-4 shadow-sm"
+            >
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-primary" />
+                  <span className="text-base font-semibold">
+                    Información del anunciante · {searched}
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <Accordion
+                  type="multiple"
+                  defaultValue={["contacto", "pcom", "productos"]}
+                  className="flex flex-col gap-3 pt-1"
+                >
             {/* 1. Contacto básico */}
             <AccordionItem value="contacto" className="rounded-lg border border-border bg-card px-4 shadow-sm">
               <div className="flex items-center justify-between gap-2 pt-2">
