@@ -137,12 +137,12 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2.5 text-sm">
-      <div className="flex min-w-[140px] items-center gap-2 text-muted-foreground">
-        <Icon className="h-4 w-4" />
+    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2.5 text-sm">
+      <div className="flex w-[140px] shrink-0 items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" />
         <span>{label}</span>
       </div>
-      <div className="flex flex-1 items-center justify-end gap-2 text-right text-foreground">
+      <div className="flex min-w-0 flex-1 items-center justify-end gap-2 text-right text-foreground">
         {children}
       </div>
     </div>
@@ -175,10 +175,14 @@ function ProductFeatureToggle({
 }) {
   const [on, setOn] = useState(defaultOn);
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2.5 text-sm">
-      <div className="flex items-center gap-2 text-foreground">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        <span>{label}</span>
+    <div
+      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors ${
+        on ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
+      }`}
+    >
+      <div className="flex min-w-0 items-center gap-2 text-foreground">
+        <Icon className={`h-4 w-4 shrink-0 ${on ? "text-primary" : "text-muted-foreground"}`} />
+        <span className="truncate font-medium">{label}</span>
       </div>
       <Switch checked={on} onCheckedChange={setOn} />
     </div>
@@ -197,16 +201,18 @@ function StatCard({
   warning?: boolean;
 }) {
   return (
-    <div className="rounded-md border border-border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
+    <div
+      className={`rounded-md border px-4 py-3 ${
+        warning ? "border-amber-300/60 bg-amber-50/60" : "border-border bg-muted/30"
+      }`}
+    >
+      <p className="text-xs leading-tight text-muted-foreground">{label}</p>
       <div className="mt-2 flex items-baseline gap-2">
-        <span className={`text-2xl font-semibold ${warning ? "text-amber-600" : "text-primary"}`}>
+        <span className={`text-2xl font-semibold ${warning ? "text-amber-700" : "text-primary"}`}>
           {value}
         </span>
         {hint ? (
-          <Badge variant="secondary" className="text-xs text-muted-foreground">
-            {hint}
-          </Badge>
+          <span className="text-[11px] font-medium text-muted-foreground">{hint}</span>
         ) : null}
       </div>
     </div>
