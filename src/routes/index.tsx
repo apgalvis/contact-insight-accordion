@@ -383,9 +383,10 @@ function Index() {
                     {contact.apellido}
                   </FieldRow>
                   <FieldRow icon={Rss} label="Feed">
+                    <span className="font-medium">
+                      {feedOn ? contact.nombreFeed : "No aplica"}
+                    </span>
                     <Switch checked={feedOn} onCheckedChange={setFeedOn} />
-                    <span className="ml-3 text-xs text-muted-foreground">Nombre Feed</span>
-                    <span className="font-medium">{feedOn ? contact.nombreFeed : "No aplica"}</span>
                   </FieldRow>
                   <FieldRow icon={Mail} label="Email contacto">
                     <span className="truncate">{contact.emailContacto}</span>
@@ -426,16 +427,16 @@ function Index() {
                   <StatCard label="Total de slots vacíos sin asignación" value={4} />
                   <StatCard label="Total propiedades destacadas" value={17} />
                   <StatCard label="Total propiedades fuera de mercado" value={1} />
-                  <StatCard label="Score promedio" value="78%" hint="> 80" warning />
+                  <StatCard label="Score promedio" value="78%" hint="Meta ≥ 80%" warning />
                   <StatCard label="Promedio de inventario activo" value={200} />
                 </div>
 
                 <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-border bg-card px-4 py-3">
+                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
                     <p className="text-xs text-muted-foreground">Zona principal de publicación</p>
                     <p className="mt-1 text-base font-semibold text-primary">Polanco</p>
                   </div>
-                  <div className="rounded-md border border-border bg-card px-4 py-3">
+                  <div className="rounded-md border border-border bg-muted/30 px-4 py-3">
                     <p className="text-xs text-muted-foreground">Fecha de la última publicación</p>
                     <p className="mt-1 text-base font-semibold text-primary">23-06-2025</p>
                   </div>
