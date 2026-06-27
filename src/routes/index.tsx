@@ -46,6 +46,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -318,6 +325,12 @@ function EditProfileDialog({
           <DialogTitle>Editar contacto básico</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 space-y-1">
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              ID <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.id} disabled className="bg-muted/40" />
+          </div>
           <div className="space-y-1">
             <Label>Nombre</Label>
             <Input value={draft.nombre} onChange={(e) => setDraft({ ...draft, nombre: e.target.value })} />
@@ -328,12 +341,16 @@ function EditProfileDialog({
           </div>
           {otpFields.map(renderOtpField)}
           <div className="space-y-1">
-            <Label>Nombre Feed</Label>
-            <Input value={draft.nombreFeed} onChange={(e) => setDraft({ ...draft, nombreFeed: e.target.value })} />
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              Nombre Feed <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.nombreFeed} disabled className="bg-muted/40" />
           </div>
           <div className="space-y-1">
-            <Label>Tipo de broker</Label>
-            <Input value={draft.tipoBroker} onChange={(e) => setDraft({ ...draft, tipoBroker: e.target.value })} />
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              Tipo de broker <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.tipoBroker} disabled className="bg-muted/40" />
           </div>
           <div className="col-span-2 space-y-1">
             <Label>Gestor comercial</Label>
@@ -368,6 +385,15 @@ function Index() {
   const [searched, setSearched] = useState<string | null>("angiegalvis@habi.co");
   const [contact, setContact] = useState<ContactInfo>(DEFAULT_CONTACT);
   const [feedOn, setFeedOn] = useState(true);
+  const [defaultSection, setDefaultSection] = useState<"contacto" | "pcom" | "productos">(
+    "contacto",
+  );
+  const [openSection, setOpenSection] = useState<string>("contacto");
+
+  function handleDefaultChange(v: "contacto" | "pcom" | "productos") {
+    setDefaultSection(v);
+    setOpenSection(v);
+  }
 
   const hasResults = !!searched;
   const productosExpirar: PcomRow[] = PCOM_ROWS;
@@ -419,10 +445,27 @@ function Index() {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
+                <div className="mb-3 flex flex-wrap items-center justify-end gap-2 pt-1 text-sm">
+                  <Label className="text-xs font-medium text-muted-foreground">
+                    Sección expandida por defecto
+                  </Label>
+                  <Select value={defaultSection} onValueChange={(v) => handleDefaultChange(v as typeof defaultSection)}>
+                    <SelectTrigger className="h-8 w-[220px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="contacto">Contacto básico</SelectItem>
+                      <SelectItem value="pcom">Información PCOM</SelectItem>
+                      <SelectItem value="productos">Productos a expirar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Accordion
-                  type="multiple"
-                  defaultValue={["contacto", "pcom", "productos"]}
-                  className="flex flex-col gap-3 pt-1"
+                  type="single"
+                  collapsible
+                  value={openSection}
+                  onValueChange={(v) => setOpenSection(v)}
+                  className="flex flex-col gap-3"
                 >
             {/* 1. Contacto básico */}
             <AccordionItem value="contacto" className="rounded-lg border border-border bg-card px-4 shadow-sm">
