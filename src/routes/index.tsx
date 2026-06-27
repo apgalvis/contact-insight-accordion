@@ -46,13 +46,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -385,15 +378,7 @@ function Index() {
   const [searched, setSearched] = useState<string | null>("angiegalvis@habi.co");
   const [contact, setContact] = useState<ContactInfo>(DEFAULT_CONTACT);
   const [feedOn, setFeedOn] = useState(true);
-  const [defaultSection, setDefaultSection] = useState<"contacto" | "pcom" | "productos">(
-    "contacto",
-  );
   const [openSection, setOpenSection] = useState<string>("contacto");
-
-  function handleDefaultChange(v: "contacto" | "pcom" | "productos") {
-    setDefaultSection(v);
-    setOpenSection(v);
-  }
 
   const hasResults = !!searched;
   const productosExpirar: PcomRow[] = PCOM_ROWS;
@@ -445,27 +430,12 @@ function Index() {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="mb-3 flex flex-wrap items-center justify-end gap-2 pt-1 text-sm">
-                  <Label className="text-xs font-medium text-muted-foreground">
-                    Sección expandida por defecto
-                  </Label>
-                  <Select value={defaultSection} onValueChange={(v) => handleDefaultChange(v as typeof defaultSection)}>
-                    <SelectTrigger className="h-8 w-[220px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="contacto">Contacto básico</SelectItem>
-                      <SelectItem value="pcom">Información PCOM</SelectItem>
-                      <SelectItem value="productos">Productos a expirar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
                 <Accordion
                   type="single"
                   collapsible
                   value={openSection}
                   onValueChange={(v) => setOpenSection(v)}
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-3 pt-2"
                 >
             {/* 1. Contacto básico */}
             <AccordionItem value="contacto" className="rounded-lg border border-border bg-card px-4 shadow-sm">
