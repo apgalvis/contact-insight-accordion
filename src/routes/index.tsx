@@ -450,11 +450,11 @@ function Index() {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-                  <ProductFeatureToggle icon={Zap} label="LI - Leads ilimitados" />
+                  <ProductFeatureToggle icon={Zap} label="LI - Leads ilimitados" defaultOn={false} />
                   <ProductFeatureToggle icon={InfinityIcon} label="Oi - Oportunidades ilimitadas" />
                   <ProductFeatureToggle icon={Star} label="Destacados" />
-                  <ProductFeatureToggle icon={Crown} label="Prime" />
-                  <ProductFeatureToggle icon={Gem} label="Elite" />
+                  <ProductFeatureToggle icon={Crown} label="Prime" defaultOn={false} />
+                  <ProductFeatureToggle icon={Gem} label="Elite" defaultOn={false} />
                 </div>
 
                 <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
