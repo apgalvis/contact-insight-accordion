@@ -325,6 +325,12 @@ function EditProfileDialog({
           <DialogTitle>Editar contacto básico</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 space-y-1">
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              ID <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.id} disabled className="bg-muted/40" />
+          </div>
           <div className="space-y-1">
             <Label>Nombre</Label>
             <Input value={draft.nombre} onChange={(e) => setDraft({ ...draft, nombre: e.target.value })} />
@@ -335,12 +341,16 @@ function EditProfileDialog({
           </div>
           {otpFields.map(renderOtpField)}
           <div className="space-y-1">
-            <Label>Nombre Feed</Label>
-            <Input value={draft.nombreFeed} onChange={(e) => setDraft({ ...draft, nombreFeed: e.target.value })} />
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              Nombre Feed <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.nombreFeed} disabled className="bg-muted/40" />
           </div>
           <div className="space-y-1">
-            <Label>Tipo de broker</Label>
-            <Input value={draft.tipoBroker} onChange={(e) => setDraft({ ...draft, tipoBroker: e.target.value })} />
+            <Label className="flex items-center gap-1.5 text-muted-foreground">
+              Tipo de broker <span className="text-[10px] uppercase tracking-wide">(no editable)</span>
+            </Label>
+            <Input value={draft.tipoBroker} disabled className="bg-muted/40" />
           </div>
           <div className="col-span-2 space-y-1">
             <Label>Gestor comercial</Label>
