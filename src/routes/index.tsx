@@ -574,6 +574,9 @@ function Index() {
                 )}
               </AccordionContent>
             </AccordionItem>
+                </Accordion>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
         )}
 
