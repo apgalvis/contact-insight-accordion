@@ -18,6 +18,7 @@ import {
   Star,
   Crown,
   Gem,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Accordion,
@@ -253,6 +254,48 @@ function EditProfileDialog({
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(contact);
 
+  const otpFields: {
+    key: keyof ContactInfo;
+    label: string;
+    otpKey: keyof ContactInfo;
+    colSpan?: boolean;
+  }[] = [
+    { key: "emailContacto", label: "Email contacto", otpKey: "emailContactoOtp", colSpan: true },
+    { key: "emailCuenta", label: "Email de la cuenta", otpKey: "emailCuentaOtp", colSpan: true },
+    { key: "telContacto", label: "Tel contacto", otpKey: "telContactoOtp" },
+    { key: "whatsapp", label: "WhatsApp", otpKey: "whatsappOtp" },
+  ];
+
+  function renderOtpField(f: (typeof otpFields)[number]) {
+    const currentValue = String(draft[f.key] ?? "");
+    const originalValue = String(contact[f.key] ?? "");
+    const originalVerified = Boolean(contact[f.otpKey]);
+    const changed = currentValue !== originalValue;
+    return (
+      <div key={f.key} className={`${f.colSpan ? "col-span-2 " : ""}space-y-1`}>
+        <div className="flex items-center justify-between gap-2">
+          <Label>{f.label}</Label>
+          {changed ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+              <AlertTriangle className="h-3 w-3" /> Requiere OTP
+            </span>
+          ) : (
+            <OtpBadge verified={originalVerified} />
+          )}
+        </div>
+        <Input
+          value={currentValue}
+          onChange={(e) => setDraft({ ...draft, [f.key]: e.target.value } as ContactInfo)}
+        />
+        {changed ? (
+          <p className="text-[11px] text-amber-700">
+            Al cambiar este dato se enviará un nuevo código OTP para validar.
+          </p>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <Dialog
       open={open}
@@ -283,22 +326,7 @@ function EditProfileDialog({
             <Label>Apellido</Label>
             <Input value={draft.apellido} onChange={(e) => setDraft({ ...draft, apellido: e.target.value })} />
           </div>
-          <div className="col-span-2 space-y-1">
-            <Label>Email contacto</Label>
-            <Input value={draft.emailContacto} onChange={(e) => setDraft({ ...draft, emailContacto: e.target.value })} />
-          </div>
-          <div className="col-span-2 space-y-1">
-            <Label>Email de la cuenta</Label>
-            <Input value={draft.emailCuenta} onChange={(e) => setDraft({ ...draft, emailCuenta: e.target.value })} />
-          </div>
-          <div className="space-y-1">
-            <Label>Tel contacto</Label>
-            <Input value={draft.telContacto} onChange={(e) => setDraft({ ...draft, telContacto: e.target.value })} />
-          </div>
-          <div className="space-y-1">
-            <Label>WhatsApp</Label>
-            <Input value={draft.whatsapp} onChange={(e) => setDraft({ ...draft, whatsapp: e.target.value })} />
-          </div>
+          {otpFields.map(renderOtpField)}
           <div className="space-y-1">
             <Label>Nombre Feed</Label>
             <Input value={draft.nombreFeed} onChange={(e) => setDraft({ ...draft, nombreFeed: e.target.value })} />
@@ -318,7 +346,12 @@ function EditProfileDialog({
           </Button>
           <Button
             onClick={() => {
-              onSave(draft);
+              const next: ContactInfo = { ...draft };
+              if (draft.emailContacto !== contact.emailContacto) next.emailContactoOtp = false;
+              if (draft.emailCuenta !== contact.emailCuenta) next.emailCuentaOtp = false;
+              if (draft.telContacto !== contact.telContacto) next.telContactoOtp = false;
+              if (draft.whatsapp !== contact.whatsapp) next.whatsappOtp = false;
+              onSave(next);
               setOpen(false);
             }}
           >
