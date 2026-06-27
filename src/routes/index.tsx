@@ -137,8 +137,8 @@ function FieldRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2.5 text-sm">
-      <div className="flex w-[140px] shrink-0 items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex items-center gap-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+      <div className="flex w-[140px] shrink-0 items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
         <span>{label}</span>
       </div>
@@ -186,7 +186,7 @@ function ProductFeatureToggle({
   const [on, setOn] = useState(defaultOn);
   return (
     <div
-      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors ${
+      className={`flex items-center justify-between gap-2 rounded-md border px-2.5 py-2 text-sm transition-colors ${
         on ? "border-primary/30 bg-primary/5" : "border-border bg-muted/30"
       }`}
     >
@@ -327,7 +327,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-muted/30 px-4 py-8">
-      <div className="mx-auto flex max-w-5xl flex-col gap-4">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3">
         {/* Search */}
         <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
@@ -361,7 +361,7 @@ function Index() {
           <Accordion
             type="multiple"
             defaultValue={["contacto", "pcom", "productos"]}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-3"
           >
             {/* 1. Contacto básico */}
             <AccordionItem value="contacto" className="rounded-lg border border-border bg-card px-4 shadow-sm">
