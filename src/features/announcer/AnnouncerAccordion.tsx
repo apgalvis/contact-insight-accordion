@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import { User } from "lucide-react";
 import {
   Accordion,
@@ -50,7 +50,7 @@ export function AnnouncerAccordion({
           >
             {sections.map((s) =>
               s.render ? (
-                <s.render key={s.id} />
+                <Fragment key={s.id}>{s.render()}</Fragment>
               ) : (
                 <AccordionItem
                   key={s.id}
